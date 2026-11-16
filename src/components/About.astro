@@ -1,5 +1,6 @@
 ---
 import SectionHeader from './SectionHeader.astro';
+import Icon from './Icon.astro';
 import { about, site } from '../data/site';
 ---
 
@@ -45,6 +46,28 @@ import { about, site } from '../data/site';
           </p>
         </article>
       </div>
+
+      {
+        about.personal && (
+          <div class="about__personal" data-reveal style="--d:3">
+            <span class="about__personal-icon" aria-hidden="true">
+              <Icon name="trophy" />
+            </span>
+            <div>
+              <p class="about__personal-lead">{about.personal.lead}</p>
+              <p class="about__personal-meta mono">
+                <span class="about__personal-title">{about.personal.title}</span>
+                {about.personal.details.map((d) => (
+                  <>
+                    <span aria-hidden="true"> · </span>
+                    <span>{d}</span>
+                  </>
+                ))}
+              </p>
+            </div>
+          </div>
+        )
+      }
     </div>
   </div>
 </section>
@@ -151,6 +174,43 @@ import { about, site } from '../data/site';
     border-radius: 50%;
     background: var(--lime);
     flex: none;
+  }
+
+  /* Personal note — deliberately quiet: hairline divider, small icon, muted text */
+  .about__personal {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-top: 32px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+  }
+  .about__personal-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: var(--lime-soft);
+    color: var(--lime);
+  }
+  .about__personal-icon :global(svg) {
+    width: 16px;
+    height: 16px;
+  }
+  .about__personal-lead {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+  }
+  .about__personal-meta {
+    margin-top: 4px;
+    font-size: 0.72rem;
+    line-height: 1.6;
+    color: var(--text-faint);
+  }
+  .about__personal-title {
+    color: var(--text);
   }
 
   @media (max-width: 900px) {

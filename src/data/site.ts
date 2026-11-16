@@ -77,6 +77,12 @@ export const about = {
   },
   lookingFor: ['Data Scientist', 'Machine Learning Engineer', 'AI Engineer'],
   lookingForNote: 'Internships — full-time or part-time',
+  /** Small personal note shown at the bottom of About. Set to null to hide. */
+  personal: {
+    lead: 'Beyond the keyboard, onto the grappling mats.',
+    title: 'Kerala State Grappling Champion — 2026',
+    details: ['Senior Heavyweight', 'No-Gi', '7th Kerala State Grappling Championship'],
+  } as { lead: string; title: string; details: string[] } | null,
 };
 
 /* ==========================================================================

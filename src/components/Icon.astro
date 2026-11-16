@@ -4,7 +4,7 @@
  * Decorative by default (aria-hidden); pass `label` when the icon stands alone.
  */
 interface Props {
-  name: 'github' | 'linkedin' | 'arrow-right' | 'arrow-up-right' | 'download' | 'mail';
+  name: 'github' | 'linkedin' | 'arrow-right' | 'arrow-up-right' | 'download' | 'mail' | 'trophy';
   label?: string;
 }
 
@@ -19,6 +19,7 @@ const paths: Record<Props['name'], string> = {
   'arrow-up-right': '<path d="M7 17 17 7M8 7h9v9"/>',
   download: '<path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/>',
   mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/>',
+  trophy: '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M7 6H4.5a.5.5 0 0 0-.5.5V8a3 3 0 0 0 3 3M17 6h2.5a.5.5 0 0 1 .5.5V8a3 3 0 0 1-3 3"/>',
 };
 ---
 
