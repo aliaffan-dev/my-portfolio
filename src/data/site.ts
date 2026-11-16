@@ -238,7 +238,7 @@ export const featuredProject = {
       'TF-IDF relevance ranking in the explorer, and class-based TF-IDF for the title terms that set each role apart.',
       'Ridge regression on log(salary), evaluated with 5-fold cross-validation against simple baselines.',
       'USD is inferred only for US postings and flagged. Estimated (annualised) salaries are only included if you choose to.',
-      'A pytest suite of 222 tests (unit, integration and headless UI), with Ruff linting in CI.',
+      'A pytest suite of 275 tests (unit, integration and headless UI), with Ruff linting in CI.',
     ],
   },
 
@@ -468,7 +468,7 @@ export const achievements: Achievement[] = [
     figure: '775,252',
     title: 'Job postings through a tested data pipeline',
     context:
-      'From 785,741 raw 2023 postings, 10,489 duplicates and invalid rows were removed, with a data-quality report kept. The repo has 222 automated tests, and GitHub Actions runs them with Ruff on Python 3.10 and 3.11. The latest run passed.',
+      'From 785,741 raw 2023 postings, 10,489 duplicates and invalid rows were removed, with a data-quality report kept. The repo has 275 automated tests, and GitHub Actions runs them with Ruff on Python 3.10 and 3.11. The latest run passed.',
     source: 'JobScope',
     href: '#projects',
   },
