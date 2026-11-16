@@ -1,0 +1,362 @@
+---
+import Icon from './Icon.astro';
+import { site, navSections } from '../data/site';
+---
+
+<header class="nav" data-nav>
+  <nav class="nav__inner container" aria-label="Primary">
+    <a href="#top" class="nav__brand" aria-label={`${site.name} — back to top`}>
+      <span class="nav__mark" aria-hidden="true">{site.initials}</span>
+      <span class="nav__name">{site.shortName}</span>
+    </a>
+
+    {
+      navSections.length > 0 && (
+        <ul class="nav__links" role="list">
+          {navSections.map((s) => (
+            <li>
+              <a href={`#${s.id}`} data-nav-link={s.id}>
+                {s.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    <div class="nav__actions">
+      {
+        site.links.github && (
+          <a class="icon-btn" href={site.links.github} target="_blank" rel="noopener noreferrer">
+            <Icon name="github" />
+            <span class="sr-only">GitHub (opens in new tab)</span>
+          </a>
+        )
+      }
+      {
+        site.links.linkedin && (
+          <a class="icon-btn" href={site.links.linkedin} target="_blank" rel="noopener noreferrer">
+            <Icon name="linkedin" />
+            <span class="sr-only">LinkedIn (opens in new tab)</span>
+          </a>
+        )
+      }
+      {
+        site.resumeUrl && (
+          <a class="btn btn--sm nav__resume" href={site.resumeUrl} download>
+            Résumé
+            <Icon name="download" />
+          </a>
+        )
+      }
+      {
+        navSections.length > 0 && (
+          <button
+            class="nav__toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+            data-nav-toggle
+          >
+            <span class="sr-only">Open menu</span>
+            <span class="nav__burger" aria-hidden="true" />
+          </button>
+        )
+      }
+    </div>
+  </nav>
+
+  {
+    navSections.length > 0 && (
+      <div class="mnav" id="mobile-menu" data-mnav hidden>
+        <ul class="mnav__links container" role="list">
+          {navSections.map((s, i) => (
+            <li>
+              <a href={`#${s.id}`} data-mnav-link>
+                <span class="mnav__num mono">{String(i + 1).padStart(2, '0')}</span>
+                {s.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <div class="mnav__foot container">
+          {site.resumeUrl && (
+            <a class="btn btn--primary" href={site.resumeUrl} download>
+              Download résumé
+              <Icon name="download" />
+            </a>
+          )}
+          {site.email && (
+            <a class="btn" href={`mailto:${site.email}`}>
+              <Icon name="mail" />
+              {site.email}
+            </a>
+          )}
+        </div>
+      </div>
+    )
+  }
+</header>
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    border-bottom: 1px solid transparent;
+    transition:
+      background-color 0.3s var(--ease-out),
+      border-color 0.3s var(--ease-out);
+  }
+  .nav[data-scrolled],
+  .nav[data-open] {
+    background: rgb(10 11 9 / 0.78);
+    border-bottom-color: var(--line);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+  }
+
+  .nav__inner {
+    height: var(--nav-h);
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .nav__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-right: auto;
+    font-weight: 600;
+  }
+  .nav__mark {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--lime);
+    color: var(--on-lime);
+    font: 700 0.85rem/1 var(--font-mono);
+    letter-spacing: -0.02em;
+    transition: transform 0.4s var(--ease-out);
+  }
+  .nav__brand:hover .nav__mark {
+    transform: rotate(-8deg) scale(1.05);
+  }
+  .nav__name {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+  }
+
+  /* ---------- Desktop links ---------- */
+  .nav__links {
+    display: flex;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .nav__links a {
+    position: relative;
+    display: inline-block;
+    padding: 8px 12px;
+    font-size: 0.92rem;
+    color: var(--text-muted);
+    transition: color 0.2s;
+  }
+  .nav__links a::after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 2px;
+    height: 1px;
+    background: var(--lime);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s var(--ease-out);
+  }
+  .nav__links a:hover,
+  .nav__links a[aria-current='true'] {
+    color: var(--text);
+  }
+  .nav__links a[aria-current='true']::after {
+    transform: scaleX(1);
+  }
+
+  .nav__actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .nav__resume {
+    margin-left: 8px;
+  }
+
+  /* ---------- Mobile toggle ---------- */
+  .nav__toggle {
+    display: none;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    margin-left: 4px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .nav__burger,
+  .nav__burger::before,
+  .nav__burger::after {
+    display: block;
+    width: 16px;
+    height: 1.5px;
+    border-radius: 2px;
+    background: currentColor;
+    transition:
+      transform 0.3s var(--ease-out),
+      opacity 0.2s;
+  }
+  .nav__burger {
+    position: relative;
+  }
+  .nav__burger::before,
+  .nav__burger::after {
+    content: '';
+    position: absolute;
+    left: 0;
+  }
+  .nav__burger::before {
+    transform: translateY(-5px);
+  }
+  .nav__burger::after {
+    transform: translateY(5px);
+  }
+  [aria-expanded='true'] .nav__burger {
+    background: transparent;
+  }
+  [aria-expanded='true'] .nav__burger::before {
+    transform: rotate(45deg);
+  }
+  [aria-expanded='true'] .nav__burger::after {
+    transform: rotate(-45deg);
+  }
+
+  /* ---------- Mobile panel ---------- */
+  .nav[data-open] {
+    background: var(--bg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .mnav {
+    border-top: 1px solid var(--line);
+    padding-block: 12px 28px;
+    height: calc(100svh - var(--nav-h));
+    overflow-y: auto;
+    background: var(--bg);
+  }
+  .mnav[hidden] {
+    display: none;
+  }
+  .mnav__links {
+    margin: 0;
+    list-style: none;
+  }
+  .mnav__links a {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+  .mnav__num {
+    font-size: 0.75rem;
+    color: var(--lime);
+  }
+  .mnav__foot {
+    display: grid;
+    gap: 10px;
+    margin-top: 24px;
+  }
+
+  @media (max-width: 1180px) {
+    .nav__links,
+    .nav__resume {
+      display: none;
+    }
+    .nav__toggle {
+      display: grid;
+    }
+  }
+  @media (min-width: 1181px) {
+    .mnav {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('[data-nav]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+  const panel = document.querySelector<HTMLElement>('[data-mnav]');
+
+  if (nav) {
+    const update = () => nav.toggleAttribute('data-scrolled', window.scrollY > 8);
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+  }
+
+  // ---------- Mobile menu ----------
+  if (nav && toggle && panel) {
+    const label = toggle.querySelector('.sr-only');
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      if (label) label.textContent = open ? 'Close menu' : 'Open menu';
+      panel.hidden = !open;
+      nav.toggleAttribute('data-open', open);
+      document.documentElement.style.overflow = open ? 'hidden' : '';
+    };
+    toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+    panel.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+    window.matchMedia('(min-width: 1181px)').addEventListener('change', (e) => e.matches && setOpen(false));
+  }
+
+  // ---------- Active section highlight ----------
+  const links = document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]');
+  if (links.length && 'IntersectionObserver' in window) {
+    const byId = new Map([...links].map((l) => [l.dataset.navLink!, l]));
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          const link = byId.get(e.target.id);
+          if (!link) continue;
+          if (e.isIntersecting) {
+            links.forEach((l) => l.removeAttribute('aria-current'));
+            link.setAttribute('aria-current', 'true');
+          } else if (link.getAttribute('aria-current')) {
+            link.removeAttribute('aria-current');
+          }
+        }
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+    byId.forEach((_, id) => {
+      const section = document.getElementById(id);
+      if (section) io.observe(section);
+    });
+  }
+</script>

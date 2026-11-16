@@ -1,0 +1,178 @@
+---
+import SectionHeader from './SectionHeader.astro';
+import Icon from './Icon.astro';
+import { certifications } from '../data/site';
+---
+
+<section class="section" id="certifications" aria-labelledby="certifications-title">
+  <div class="container">
+    <SectionHeader
+      id="certifications"
+      title="Formal training."
+      intro="Two structured data science programmes, both completed with an A+ grade."
+    />
+
+    <ul class="certs" role="list">
+      {
+        certifications.map((c, i) => (
+          <li class="cert" data-spotlight data-reveal style={`--d:${i}`}>
+            <div class="cert__seal" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="24" cy="20" r="11" />
+                <path d="M18 29.5 15 42l9-4 9 4-3-12.5" stroke-linejoin="round" />
+                <path d="m19.5 20 3 3 6-6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+
+            <div class="cert__body">
+              <h3 class="cert__title">{c.title}</h3>
+              <p class="cert__issuer">{c.issuer}</p>
+
+              <dl class="cert__meta">
+                {c.duration && (
+                  <div>
+                    <dt class="mono">Duration</dt>
+                    <dd>{c.duration}</dd>
+                  </div>
+                )}
+                {c.grade && (
+                  <div>
+                    <dt class="mono">Grade</dt>
+                    <dd class="cert__grade">{c.grade}</dd>
+                  </div>
+                )}
+                {c.completed && (
+                  <div>
+                    <dt class="mono">Completed</dt>
+                    <dd>
+                      <time datetime={c.completed.iso}>{c.completed.text}</time>
+                    </dd>
+                  </div>
+                )}
+                {c.issued && (
+                  <div>
+                    <dt class="mono">Issued</dt>
+                    <dd>
+                      <time datetime={c.issued.iso}>{c.issued.text}</time>
+                    </dd>
+                  </div>
+                )}
+                {c.affiliation && (
+                  <div>
+                    <dt class="mono">Training affiliation</dt>
+                    <dd>{c.affiliation}</dd>
+                  </div>
+                )}
+              </dl>
+
+              {c.credentialUrl && (
+                <a class="cert__link" href={c.credentialUrl} target="_blank" rel="noopener noreferrer">
+                  View credential <Icon name="arrow-up-right" />
+                  <span class="sr-only">{` for ${c.title}, ${c.issuer} (opens in new tab)`}</span>
+                </a>
+              )}
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .certs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+    gap: 16px;
+    margin: 48px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .cert {
+    display: flex;
+    gap: 22px;
+    padding: 26px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-raised);
+    overflow: hidden;
+    transition: border-color 0.3s var(--ease-out);
+  }
+  .cert:hover {
+    border-color: var(--line-strong);
+  }
+  .cert__seal {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: var(--lime-soft);
+    color: var(--lime);
+  }
+  .cert__seal svg {
+    width: 34px;
+    height: 34px;
+  }
+  .cert__body {
+    min-width: 0;
+  }
+  .cert__title {
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .cert__issuer {
+    margin-top: 6px;
+    color: var(--text-muted);
+  }
+  .cert__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 32px;
+    margin: 18px 0 0;
+  }
+  .cert__meta dt {
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .cert__meta dd {
+    margin: 4px 0 0;
+    font-size: 0.95rem;
+  }
+  .cert__grade {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--lime);
+  }
+  .cert__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 18px;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .cert__link :global(svg) {
+    width: 16px;
+    height: 16px;
+  }
+  .cert__link:hover {
+    color: var(--lime);
+  }
+
+  @media (max-width: 480px) {
+    .cert {
+      flex-direction: column;
+      gap: 16px;
+      padding: 22px;
+    }
+    .cert__seal {
+      width: 52px;
+      height: 52px;
+    }
+  }
+</style>

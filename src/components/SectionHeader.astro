@@ -1,0 +1,50 @@
+---
+/**
+ * Consistent section heading. The number is derived from the section's
+ * position in `navSections`, so reordering the nav renumbers automatically.
+ */
+import { navSections } from '../data/site';
+
+interface Props {
+  id: string;
+  title: string;
+  intro?: string;
+}
+
+const { id, title, intro } = Astro.props;
+const idx = navSections.findIndex((s) => s.id === id);
+const label = navSections[idx]?.label ?? id;
+const num = String(idx + 1).padStart(2, '0');
+---
+
+<header class="sh" data-reveal>
+  <p class="eyebrow sh__eyebrow">
+    <span class="sh__num">{num}</span>
+    <span class="sh__rule" aria-hidden="true"></span>
+    {label}
+  </p>
+  <h2 id={`${id}-title`} class="sh__title">{title}</h2>
+  {intro && <p class="sh__intro">{intro}</p>}
+</header>
+
+<style>
+  .sh__num {
+    color: var(--lime);
+  }
+  .sh__rule {
+    width: 28px;
+    height: 1px;
+    background: var(--line-strong);
+  }
+  .sh__title {
+    margin-top: 20px;
+    max-width: 18ch;
+    font-size: clamp(2.1rem, 4.6vw, 3.4rem);
+    letter-spacing: -0.035em;
+  }
+  .sh__intro {
+    margin-top: 18px;
+    max-width: 58ch;
+    color: var(--text-muted);
+  }
+</style>

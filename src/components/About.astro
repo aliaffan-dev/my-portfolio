@@ -1,0 +1,169 @@
+---
+import SectionHeader from './SectionHeader.astro';
+import { about, site } from '../data/site';
+---
+
+<section class="section about" id="about" aria-labelledby="about-title">
+  <div class="container about__grid">
+    <div class="about__head">
+      <SectionHeader id="about" title={about.heading} />
+    </div>
+
+    <div class="about__body">
+      <div class="about__text">
+        {
+          about.paragraphs.map((p, i) => (
+            <p data-reveal style={`--d:${i}`} class={i === 0 ? 'about__lead' : undefined}>
+              {p}
+            </p>
+          ))
+        }
+      </div>
+
+      <div class="about__cards">
+        <article class="about__card" data-reveal style="--d:1" aria-labelledby="edu-title">
+          <p class="about__card-label mono" id="edu-title">Education</p>
+          <h3 class="about__card-title">{about.education.degree}</h3>
+          <p class="about__card-sub">{about.education.institution}</p>
+          <p class="about__card-meta mono">
+            <span>{about.education.location}</span>
+            <span aria-hidden="true">·</span>
+            <span>{about.education.period}</span>
+          </p>
+        </article>
+
+        <article class="about__card" data-reveal style="--d:2" aria-labelledby="seek-title">
+          <p class="about__card-label mono" id="seek-title">Looking for</p>
+          <ul class="about__roles" role="list">
+            {about.lookingFor.map((r) => <li>{r}</li>)}
+          </ul>
+          <p class="about__card-meta mono">
+            <span>{about.lookingForNote}</span>
+          </p>
+          <p class="about__card-meta mono">
+            <span>{site.openTo.join(' · ')}</span>
+          </p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(40px, 6vw, 96px);
+    align-items: start;
+  }
+  .about__head {
+    position: sticky;
+    top: calc(var(--nav-h) + 40px);
+  }
+
+  .about__text {
+    display: grid;
+    gap: 20px;
+    color: var(--text-muted);
+    max-width: 62ch;
+  }
+  .about__lead {
+    color: var(--text);
+    font-size: clamp(1.15rem, 1.7vw, 1.3rem);
+    line-height: 1.55;
+  }
+
+  .about__cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 48px;
+  }
+  .about__card {
+    position: relative;
+    padding: 24px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.025), transparent 60%), var(--bg-raised);
+    transition: border-color 0.3s var(--ease-out);
+  }
+  .about__card:hover {
+    border-color: var(--line-strong);
+  }
+  .about__card::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 24px;
+    width: 32px;
+    height: 2px;
+    background: var(--lime);
+    border-radius: 2px;
+  }
+  .about__card-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .about__card-title {
+    margin-top: 14px;
+    font-size: 1.2rem;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+  }
+  .about__card-sub {
+    margin-top: 6px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+  .about__card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 14px;
+    font-size: 0.75rem;
+    color: var(--text-faint);
+  }
+  .about__card-meta + .about__card-meta {
+    margin-top: 4px;
+  }
+
+  .about__roles {
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 6px;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 500;
+  }
+  .about__roles li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .about__roles li::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--lime);
+    flex: none;
+  }
+
+  @media (max-width: 900px) {
+    .about__grid {
+      grid-template-columns: 1fr;
+    }
+    .about__head {
+      position: static;
+    }
+  }
+  @media (max-width: 560px) {
+    .about__cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,272 @@
+---
+import Icon from './Icon.astro';
+import NotebookCell from './NotebookCell.astro';
+import { site, heroProfile } from '../data/site';
+---
+
+<section class="hero" id="top" aria-labelledby="hero-title">
+  <div class="hero__bg" aria-hidden="true">
+    <div class="hero__grid"></div>
+    <div class="hero__glow"></div>
+  </div>
+
+  <div class="hero__inner container">
+    <div class="hero__copy">
+      {
+        site.availability && (
+          <p class="hero__status reveal" style="--d:0">
+            <span class="hero__pulse" aria-hidden="true" />
+            {site.availability}
+          </p>
+        )
+      }
+
+      <h1 id="hero-title" class="hero__title">
+        <span class="reveal" style="--d:1">{site.nameLead}</span>{' '}
+        <span class="hero__title-rest reveal" style="--d:2">{site.nameTail}<span class="hero__dot" aria-hidden="true">.</span></span>
+      </h1>
+
+      <p class="hero__role reveal" style="--d:3">
+        <span class="mono">//</span>
+        {site.role}
+      </p>
+
+      <p class="hero__lede reveal" style="--d:4">
+        BCA graduate working across data analysis, machine learning and computer vision — from cleaning
+        and exploring datasets to building real-time detection apps with Python.
+      </p>
+
+      <div class="hero__ctas reveal" style="--d:5">
+        {
+          site.links.github && (
+            <a class="btn btn--primary" href={site.links.github} target="_blank" rel="noopener noreferrer">
+              <Icon name="github" />
+              GitHub
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+          )
+        }
+        {
+          site.links.linkedin && (
+            <a class="btn" href={site.links.linkedin} target="_blank" rel="noopener noreferrer">
+              <Icon name="linkedin" />
+              LinkedIn
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+          )
+        }
+        {
+          site.email && (
+            <a class="btn" href={`mailto:${site.email}`}>
+              <Icon name="mail" />
+              Email me
+            </a>
+          )
+        }
+      </div>
+
+      <dl class="hero__meta reveal" style="--d:6">
+        <div>
+          <dt>Based in</dt>
+          <dd>{site.location}</dd>
+        </div>
+        <div>
+          <dt>Open to</dt>
+          <dd>{site.openTo.join(' · ')}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="hero__visual reveal" style="--d:4">
+      <NotebookCell call="ali.profile()" data={heroProfile} />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    padding-block: calc(var(--nav-h) + 48px) 80px;
+    overflow: hidden;
+  }
+
+  /* ---------- Background ---------- */
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .hero__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 64px 64px;
+    background-position: center top;
+    mask-image: radial-gradient(ellipse 75% 70% at 65% 40%, #000 20%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 75% 70% at 65% 40%, #000 20%, transparent 75%);
+    opacity: 0.6;
+  }
+  .hero__glow {
+    position: absolute;
+    width: min(760px, 90vw);
+    aspect-ratio: 1;
+    right: -12%;
+    top: 50%;
+    translate: 0 -50%;
+    background: radial-gradient(circle, var(--lime-glow) 0%, rgb(195 245 60 / 0.05) 38%, transparent 68%);
+    filter: blur(20px);
+    animation: drift 18s ease-in-out infinite alternate;
+  }
+  @keyframes drift {
+    to { transform: translate(-6%, 4%) scale(1.08); }
+  }
+
+  /* ---------- Layout ---------- */
+  .hero__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(40px, 6vw, 88px);
+  }
+
+  .hero__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 14px 7px 12px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.02);
+    font: 500 0.8rem/1 var(--font-mono);
+    color: var(--text-muted);
+  }
+  .hero__pulse {
+    position: relative;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--lime);
+  }
+  .hero__pulse::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--lime);
+    animation: pulse 2s var(--ease-out) infinite;
+  }
+  @keyframes pulse {
+    from { transform: scale(1); opacity: 0.7; }
+    to { transform: scale(3); opacity: 0; }
+  }
+
+  .hero__title {
+    margin-top: 28px;
+    font-size: clamp(3.4rem, 9.5vw, 7.4rem);
+    font-weight: 600;
+    line-height: 0.92;
+    letter-spacing: -0.045em;
+  }
+  .hero__title > span {
+    display: block;
+  }
+  .hero__title-rest {
+    color: var(--text-faint);
+    font-weight: 400;
+  }
+  .hero__dot {
+    color: var(--lime);
+  }
+
+  .hero__role {
+    margin-top: 28px;
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 2vw, 1.4rem);
+    font-weight: 500;
+  }
+  .hero__role .mono {
+    color: var(--lime);
+    font-size: 0.85em;
+  }
+
+  .hero__lede {
+    margin-top: 16px;
+    max-width: 52ch;
+    color: var(--text-muted);
+    font-size: 1.08rem;
+  }
+
+  .hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 36px;
+  }
+
+  .hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 40px;
+    margin: 44px 0 0;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+  .hero__meta dt {
+    font: 500 0.7rem/1 var(--font-mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .hero__meta dd {
+    margin: 8px 0 0;
+    font-size: 0.95rem;
+  }
+
+  .hero__visual {
+    position: relative;
+  }
+  /* A thin lime rule offset behind the cell for depth */
+  .hero__visual::before {
+    content: '';
+    position: absolute;
+    inset: 18px -18px -18px 18px;
+    border: 1px solid rgb(195 245 60 / 0.22);
+    border-radius: var(--radius);
+    z-index: -1;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 960px) {
+    .hero {
+      min-height: auto;
+    }
+    .hero__inner {
+      grid-template-columns: 1fr;
+    }
+    .hero__visual {
+      max-width: 560px;
+    }
+    .hero__glow {
+      top: 75%;
+      right: -30%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero__visual::before {
+      inset: 12px -8px -12px 8px;
+    }
+    .hero__ctas .btn {
+      flex: 1 1 100%;
+    }
+  }
+</style>

@@ -1,0 +1,129 @@
+---
+import SectionHeader from './SectionHeader.astro';
+import FeaturedProject from './FeaturedProject.astro';
+import ProjectCard from './ProjectCard.astro';
+import Icon from './Icon.astro';
+import { moreProjects, site } from '../data/site';
+---
+
+<section class="section projects" id="projects" aria-labelledby="projects-title">
+  <div class="container">
+    <SectionHeader
+      id="projects"
+      title="Things I’ve built."
+      intro="One project in depth, followed by the machine learning and computer vision projects behind my skills."
+    />
+
+    <FeaturedProject />
+
+    {
+      moreProjects.length > 0 && (
+        <div class="more">
+          <h3 class="more__title" data-reveal>More projects</h3>
+          <ul class="more__grid" role="list">
+            {moreProjects.map((p, i) => (
+              <li>
+                <ProjectCard project={p} index={i} />
+              </li>
+            ))}
+            {site.links.github && (
+              <li>
+                <a
+                  class="gh-card"
+                  href={site.links.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-spotlight
+                  data-reveal
+                  style={`--d:${moreProjects.length % 3}`}
+                >
+                  <Icon name="github" />
+                  <span class="gh-card__title">More on GitHub</span>
+                  <span class="gh-card__text">Notebooks, experiments and work in progress.</span>
+                  <span class="gh-card__cta mono">
+                    {site.links.github.replace('https://', '')}
+                    <Icon name="arrow-up-right" />
+                  </span>
+                  <span class="sr-only">(opens in new tab)</span>
+                </a>
+              </li>
+            )}
+          </ul>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .more {
+    margin-top: 88px;
+  }
+  .more__title {
+    font-size: clamp(1.5rem, 2.6vw, 1.9rem);
+    letter-spacing: -0.03em;
+  }
+  .more__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    margin: 28px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .more__grid > li {
+    min-width: 0;
+  }
+
+  .gh-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    height: 100%;
+    min-height: 240px;
+    padding: 26px;
+    border: 1px dashed var(--line-strong);
+    border-radius: var(--radius);
+    color: var(--text-muted);
+    transition:
+      border-color 0.3s var(--ease-out),
+      color 0.3s;
+  }
+  .gh-card > :global(svg) {
+    width: 30px;
+    height: 30px;
+    color: var(--text);
+  }
+  .gh-card__title {
+    margin-top: 6px;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .gh-card__text {
+    font-size: 0.92rem;
+  }
+  .gh-card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    font-size: 0.78rem;
+    color: var(--lime);
+  }
+  .gh-card__cta :global(svg) {
+    width: 15px;
+    height: 15px;
+  }
+  .gh-card:hover {
+    border-color: rgb(195 245 60 / 0.5);
+  }
+
+  @media (max-width: 400px) {
+    .more__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

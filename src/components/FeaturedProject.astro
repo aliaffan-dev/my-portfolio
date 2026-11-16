@@ -1,0 +1,516 @@
+---
+import Icon from './Icon.astro';
+import ScreenshotGallery from './ScreenshotGallery.astro';
+import { featuredProject as p } from '../data/site';
+---
+
+<article class="fp" aria-labelledby="fp-title">
+  <!-- ---------- Header ---------- -->
+  <header class="fp__head" data-reveal>
+    <div class="fp__intro">
+      <p class="eyebrow fp__eyebrow"><span class="fp__star" aria-hidden="true">✦</span> Featured project</p>
+      <h3 id="fp-title" class="fp__title">{p.name}</h3>
+      <p class="fp__tagline">{p.tagline}</p>
+    </div>
+
+    <div class="fp__actions">
+      <div class="fp__btns">
+        {
+          p.demo && (
+            <a class="btn btn--primary" href={p.demo} target="_blank" rel="noopener noreferrer">
+              Live demo
+              <Icon name="arrow-up-right" />
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+          )
+        }
+        <a class="btn" href={p.repo} target="_blank" rel="noopener noreferrer">
+          <Icon name="github" />
+          Source code
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </div>
+      {
+        p.demo ? (
+          <p class="fp__status mono">
+            <span class="fp__status-dot" aria-hidden="true" />
+            Demo checked {p.demoVerified}
+            <span class="fp__status-note">{p.demoNote}</span>
+          </p>
+        ) : (
+          <p class="fp__status fp__status--pending mono">Live demo link pending verification</p>
+        )
+      }
+    </div>
+  </header>
+
+  <!-- ---------- Gallery ---------- -->
+  <div class="fp__gallery" data-reveal>
+    <ScreenshotGallery shots={p.screenshots} name={p.name} url={p.demo} width={1440} height={1000} />
+    <p class="fp__caption mono">{p.screenshotNote}</p>
+  </div>
+
+  <!-- ---------- Overview / problem + metrics ---------- -->
+  <div class="fp__grid">
+    <div class="fp__story" data-reveal>
+      <h4 class="fp__h">Overview</h4>
+      <p>{p.summary}</p>
+      <h4 class="fp__h">The problem</h4>
+      <p>{p.problem}</p>
+    </div>
+
+    <div class="fp__metrics" data-reveal style="--d:1">
+      <h4 class="fp__h">Salary model evaluation</h4>
+      <p class="fp__metrics-lede">
+        Ridge regression on log(salary), 5-fold cross-validation. Results from the full dataset and the hosted demo are reported
+        separately.
+      </p>
+      <div class="metric-sets">
+        {
+          p.metrics.map((set) => (
+            <div class={`metric-set metric-set--${set.id}`}>
+              <p class="metric-set__title">
+                {set.title}
+                <span class="mono">{set.context}</span>
+              </p>
+              <dl class="metric-set__items">
+                {set.items.map((m) => (
+                  <div class="metric">
+                    <dt class="mono">{m.label}</dt>
+                    <dd>
+                      <span class="metric__value">{m.value}</span>
+                      {m.note && <span class="metric__note">{m.note}</span>}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------- Features ---------- -->
+  <div class="fp__block" data-reveal>
+    <h4 class="fp__h">Key features <span class="fp__count mono">9 app pages</span></h4>
+    <ul class="features" role="list">
+      {
+        p.features.map((f) => (
+          <li class="feature">
+            <p class="feature__title">{f.title}</p>
+            <p class="feature__text">{f.text}</p>
+          </li>
+        ))
+      }
+      {
+        p.localOnly.map((f) => (
+          <li class="feature feature--local">
+            <p class="feature__title">
+              {f.title}
+              <span class="badge mono">Tested locally</span>
+            </p>
+            <p class="feature__text">{f.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <!-- ---------- Dataset & methodology ---------- -->
+  <div class="fp__grid fp__grid--data">
+    <div data-reveal>
+      <h4 class="fp__h">Dataset</h4>
+      <p class="fp__src">
+        <a href={p.dataset.sourceUrl} target="_blank" rel="noopener noreferrer" class="text-link">
+          {p.dataset.source}<span class="sr-only"> (opens in new tab)</span>
+        </a>
+        <span class="mono"> · {p.dataset.license}</span>
+      </p>
+      <ol class="pipeline" role="list">
+        {
+          p.dataset.steps.map((s) => (
+            <li class="pipeline__step">
+              <span class="pipeline__v">{s.v}</span>
+              <span class="pipeline__k mono">{s.k}</span>
+              <span class="pipeline__d">{s.d}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <div data-reveal style="--d:1">
+      <h4 class="fp__h">Methodology</h4>
+      <ul class="methods" role="list">
+        {p.dataset.methods.map((m) => <li>{m}</li>)}
+      </ul>
+    </div>
+  </div>
+
+  <!-- ---------- Stack ---------- -->
+  <div class="fp__block fp__stack" data-reveal>
+    <h4 class="fp__h">Built with</h4>
+    <ul class="tag-list" role="list">
+      {p.stack.map((t) => <li class="tag">{t}</li>)}
+    </ul>
+  </div>
+</article>
+
+<style>
+  .fp {
+    position: relative;
+    margin-top: 56px;
+    padding: clamp(22px, 4vw, 48px);
+    border: 1px solid var(--line-strong);
+    border-radius: calc(var(--radius) + 6px);
+    background:
+      radial-gradient(900px 420px at 85% -10%, rgb(195 245 60 / 0.07), transparent 60%),
+      linear-gradient(180deg, rgb(255 255 255 / 0.02), transparent 30%),
+      var(--bg-raised);
+  }
+  /* Lime hairline along the top edge */
+  .fp::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--lime), transparent);
+    opacity: 0.6;
+  }
+
+  /* ---------- Header ---------- */
+  .fp__head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 28px 48px;
+  }
+  .fp__star {
+    color: var(--lime);
+  }
+  .fp__title {
+    margin-top: 14px;
+    font-size: clamp(2.6rem, 6vw, 4.4rem);
+    letter-spacing: -0.045em;
+  }
+  .fp__tagline {
+    margin-top: 10px;
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+    color: var(--text-muted);
+  }
+  .fp__actions {
+    display: grid;
+    gap: 14px;
+    justify-items: start;
+    max-width: 380px;
+  }
+  .fp__btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .fp__status {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    column-gap: 10px;
+    row-gap: 4px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  .fp__status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--lime);
+    box-shadow: 0 0 10px var(--lime-glow);
+  }
+  .fp__status-note {
+    grid-column: 2;
+    color: var(--text-faint);
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    line-height: 1.45;
+  }
+  .fp__status--pending {
+    display: block;
+    color: var(--text-faint);
+  }
+
+  /* ---------- Gallery ---------- */
+  .fp__gallery {
+    margin-top: 40px;
+  }
+  .fp__caption {
+    margin-top: 12px;
+    font-size: 0.72rem;
+    line-height: 1.5;
+    color: var(--text-faint);
+  }
+
+  /* ---------- Shared blocks ---------- */
+  .fp__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(32px, 5vw, 64px);
+    margin-top: 56px;
+  }
+  .fp__block {
+    margin-top: 56px;
+  }
+  .fp__h {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin: 0 0 14px;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  .fp__count {
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: var(--text-faint);
+    letter-spacing: 0;
+  }
+  .fp__story p {
+    color: var(--text-muted);
+  }
+  .fp__story p + .fp__h {
+    margin-top: 32px;
+  }
+
+  /* ---------- Metrics ---------- */
+  .fp__metrics-lede {
+    font-size: 0.92rem;
+    color: var(--text-muted);
+  }
+  .metric-sets {
+    display: grid;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .metric-set {
+    padding: 18px 20px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg);
+  }
+  .metric-set--full {
+    border-color: rgb(195 245 60 / 0.35);
+    background: linear-gradient(135deg, rgb(195 245 60 / 0.06), transparent 55%), var(--bg);
+  }
+  .metric-set__title {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px 16px;
+    font-weight: 600;
+  }
+  .metric-set__title .mono {
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: var(--text-faint);
+  }
+  .metric-set__items {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 14px 0 0;
+  }
+  .metric dt {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: var(--text-faint);
+  }
+  .metric dd {
+    margin: 4px 0 0;
+    display: grid;
+    gap: 2px;
+  }
+  .metric__value {
+    font-family: var(--font-display);
+    font-size: clamp(1.7rem, 3vw, 2.2rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+  .metric-set--full .metric__value {
+    color: var(--lime);
+  }
+  .metric__note {
+    font-size: 0.78rem;
+    color: var(--text-faint);
+    line-height: 1.4;
+  }
+
+  /* ---------- Features ---------- */
+  .features {
+    display: grid;
+    /* 10 items: 5 × 2 on desktop, 2 × 5 on tablet, single column on phones */
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--line);
+  }
+  .feature {
+    padding: 20px;
+    background: var(--bg-raised);
+  }
+  .feature__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 0.98rem;
+  }
+  .feature__text {
+    margin-top: 6px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+  }
+  .feature--local {
+    background: repeating-linear-gradient(-45deg, transparent 0 8px, rgb(255 255 255 / 0.012) 8px 16px), var(--bg-raised);
+  }
+  .badge {
+    padding: 3px 8px;
+    border: 1px dashed var(--line-strong);
+    border-radius: 999px;
+    font-size: 0.65rem;
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+
+  /* ---------- Dataset ---------- */
+  .fp__src {
+    font-size: 0.92rem;
+    color: var(--text-muted);
+  }
+  .fp__src .mono {
+    font-size: 0.8rem;
+    color: var(--text-faint);
+  }
+  :global(.text-link) {
+    color: var(--text);
+    text-decoration: underline;
+    text-decoration-color: rgb(195 245 60 / 0.5);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 0.2s;
+  }
+  :global(.text-link:hover) {
+    text-decoration-color: var(--lime);
+  }
+
+  .pipeline {
+    display: grid;
+    gap: 0;
+    margin: 20px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .pipeline__step {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 16px;
+    padding: 14px 0 14px 24px;
+    border-left: 1px solid var(--line-strong);
+  }
+  .pipeline__step::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 22px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--bg-raised);
+    border: 1px solid var(--lime);
+  }
+  .pipeline__step:last-child::before {
+    background: var(--lime);
+  }
+  .pipeline__v {
+    grid-row: span 2;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    min-width: 6.2ch;
+  }
+  .pipeline__k {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text);
+    align-self: end;
+  }
+  .pipeline__d {
+    font-size: 0.82rem;
+    color: var(--text-faint);
+    line-height: 1.4;
+  }
+
+  .methods {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .methods li {
+    position: relative;
+    padding-left: 22px;
+    font-size: 0.94rem;
+    color: var(--text-muted);
+  }
+  .methods li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--lime);
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1100px) {
+    .features {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 600px) {
+    .features {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 900px) {
+    .fp__grid {
+      grid-template-columns: 1fr;
+    }
+    .fp__actions {
+      max-width: none;
+    }
+  }
+  @media (max-width: 480px) {
+    .fp__btns .btn {
+      flex: 1 1 auto;
+    }
+    .metric-set__items {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

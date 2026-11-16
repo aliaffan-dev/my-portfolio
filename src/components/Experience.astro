@@ -1,0 +1,206 @@
+---
+import SectionHeader from './SectionHeader.astro';
+import { experience } from '../data/site';
+---
+
+<section class="section" id="experience" aria-labelledby="experience-title">
+  <div class="container">
+    <SectionHeader
+      id="experience"
+      title="Where I’ve been learning."
+      intro="Training, an internship, mentoring and the independent work in between. Newest first."
+    />
+
+    <ol class="tl" role="list">
+      {
+        experience.map((e, i) => (
+          <li class="tl__item" data-reveal style={`--d:${Math.min(i, 2)}`}>
+            <div class="tl__when">
+              <p class="tl__period mono">
+                <time datetime={e.start}>{e.period}</time>
+              </p>
+              <p class={`tl__kind tl__kind--${e.kind.toLowerCase()} mono`}>{e.kind}</p>
+            </div>
+
+            <span class="tl__node" aria-hidden="true" />
+
+            <article class="tl__card" data-spotlight>
+              <h3 class="tl__role">{e.role}</h3>
+              <p class="tl__org">
+                {e.org}
+                {e.location && <span class="tl__loc"> · {e.location}</span>}
+              </p>
+              <ul class="tl__points" role="list">
+                {e.points.map((p) => <li>{p}</li>)}
+              </ul>
+              {e.tags && (
+                <ul class="tag-list tl__tags" role="list" aria-label="Tools used">
+                  {e.tags.map((t) => <li class="tag">{t}</li>)}
+                </ul>
+              )}
+            </article>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .tl {
+    position: relative;
+    margin: 56px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 20px;
+  }
+  /* The vertical rail */
+  .tl::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    bottom: 8px;
+    left: calc(200px + 20px);
+    width: 1px;
+    background: linear-gradient(180deg, var(--lime), var(--line-strong) 18%, var(--line) 85%, transparent);
+  }
+
+  .tl__item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 200px 40px minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .tl__when {
+    padding-top: 22px;
+    text-align: right;
+  }
+  .tl__period {
+    font-size: 0.8rem;
+    color: var(--text);
+  }
+  .tl__kind {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 3px 9px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+  .tl__kind--internship,
+  .tl__kind--training {
+    border-color: rgb(195 245 60 / 0.4);
+    color: var(--lime);
+  }
+  .tl__kind--volunteer {
+    border-style: dashed;
+  }
+
+  .tl__node {
+    justify-self: center;
+    margin-top: 26px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    border: 1px solid var(--lime);
+    background: var(--bg);
+    box-shadow: 0 0 0 5px var(--bg);
+    z-index: 1;
+  }
+  .tl__item:first-child .tl__node {
+    background: var(--lime);
+    box-shadow:
+      0 0 0 5px var(--bg),
+      0 0 14px var(--lime-glow);
+  }
+
+  .tl__card {
+    padding: 24px 26px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-raised);
+    overflow: hidden;
+    transition: border-color 0.3s var(--ease-out);
+  }
+  .tl__card:hover {
+    border-color: var(--line-strong);
+  }
+  .tl__role {
+    font-size: 1.3rem;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .tl__org {
+    margin-top: 6px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .tl__loc {
+    font-weight: 400;
+    color: var(--text-faint);
+  }
+  .tl__points {
+    display: grid;
+    gap: 8px;
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tl__points li {
+    position: relative;
+    padding-left: 18px;
+    font-size: 0.94rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+  }
+  .tl__points li::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 0.68em;
+    width: 6px;
+    height: 1px;
+    background: var(--lime);
+  }
+  .tl__tags {
+    margin-top: 18px;
+  }
+
+  /* ---------- Narrow: rail on the left, dates above each card ---------- */
+  @media (max-width: 760px) {
+    .tl::before {
+      left: 5px;
+    }
+    .tl__item {
+      grid-template-columns: 11px minmax(0, 1fr);
+      column-gap: 18px;
+    }
+    .tl__when {
+      grid-column: 2;
+      grid-row: 1;
+      padding-top: 0;
+      text-align: left;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 12px;
+    }
+    .tl__kind {
+      margin-top: 0;
+    }
+    .tl__node {
+      grid-column: 1;
+      grid-row: 1;
+      margin-top: 4px;
+    }
+    .tl__card {
+      grid-column: 2;
+      margin-top: 12px;
+      padding: 20px;
+    }
+  }
+</style>

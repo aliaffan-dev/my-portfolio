@@ -1,0 +1,223 @@
+---
+/**
+ * Accessible tabbed screenshot viewer (WAI-ARIA tabs pattern):
+ * arrow keys / Home / End move between tabs, only the active tab is in tab order.
+ * Without JS, all screenshots are shown stacked (nothing is hidden).
+ */
+interface Shot {
+  id: string;
+  label: string;
+  src: string;
+  alt: string;
+}
+interface Props {
+  shots: Shot[];
+  name: string;
+  url?: string | null;
+  width: number;
+  height: number;
+}
+
+const { shots, name, url, width, height } = Astro.props;
+const host = url ? new URL(url).host : 'localhost:8501';
+---
+
+<div class="gallery" data-gallery>
+  <div class="gallery__tabs" role="tablist" aria-label={`${name} screenshots`} data-tablist>
+    {
+      shots.map((s, i) => (
+        <button
+          type="button"
+          role="tab"
+          id={`tab-${s.id}`}
+          aria-controls={`panel-${s.id}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          tabindex={i === 0 ? 0 : -1}
+          class="gallery__tab"
+        >
+          {s.label}
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="gallery__frame">
+    <div class="gallery__chrome" aria-hidden="true">
+      <span class="gallery__dots"><i></i><i></i><i></i></span>
+      <span class="gallery__url mono">{host}</span>
+    </div>
+    <div class="gallery__panels">
+      {
+        shots.map((s, i) => (
+          <div
+            class="gallery__panel"
+            role="tabpanel"
+            id={`panel-${s.id}`}
+            aria-labelledby={`tab-${s.id}`}
+            data-panel
+          >
+            <a href={s.src} target="_blank" rel="noopener" class="gallery__link">
+              <img
+                src={s.src}
+                alt={s.alt}
+                width={width}
+                height={height}
+                loading={i === 0 ? 'eager' : 'lazy'}
+                decoding="async"
+              />
+              <span class="sr-only">(open full-size image in new tab)</span>
+            </a>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</div>
+
+<style>
+  .gallery__tabs {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    margin-bottom: 14px;
+    width: fit-content;
+    max-width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--bg);
+    scrollbar-width: none;
+  }
+  /* No JS: no tabs, all screenshots stacked. With JS: first one shown until the script takes over. */
+  :global(html:not(.js)) .gallery__tabs {
+    display: none;
+  }
+  :global(.js) [data-gallery]:not([data-ready]) .gallery__panel:not(:first-child) {
+    display: none;
+  }
+  .gallery__tab {
+    flex: none;
+    padding: 8px 14px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text-muted);
+    font: 500 0.82rem/1 var(--font-body);
+    cursor: pointer;
+    transition:
+      background-color 0.2s,
+      color 0.2s;
+  }
+  .gallery__tab:hover {
+    color: var(--text);
+  }
+  .gallery__tab[aria-selected='true'] {
+    background: var(--lime);
+    color: var(--on-lime);
+  }
+
+  .gallery__frame {
+    border: 1px solid var(--line-strong);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--bg);
+    box-shadow: 0 40px 80px -40px rgb(0 0 0 / 0.9);
+  }
+  .gallery__chrome {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .gallery__dots {
+    display: flex;
+    gap: 6px;
+  }
+  .gallery__dots i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--line-strong);
+  }
+  .gallery__url {
+    flex: 1;
+    max-width: 420px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text-faint);
+    font-size: 0.72rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .gallery__panel + .gallery__panel {
+    border-top: 1px solid var(--line);
+  }
+  /* With JS: only the selected panel shows; no stacked borders */
+  :global(.js) .gallery__panel + .gallery__panel {
+    border-top: 0;
+  }
+  .gallery__panel[hidden] {
+    display: none;
+  }
+  .gallery__link {
+    display: block;
+    cursor: zoom-in;
+  }
+  .gallery__link img {
+    width: 100%;
+    height: auto;
+    animation: shot-in 0.45s var(--ease-out);
+  }
+  @keyframes shot-in {
+    from {
+      opacity: 0.4;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((g) => {
+    const list = g.querySelector<HTMLElement>('[data-tablist]');
+    const tabs = [...g.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const panels = [...g.querySelectorAll<HTMLElement>('[data-panel]')];
+    if (!list || !tabs.length) return;
+
+    const select = (i: number, focus = false) => {
+      tabs.forEach((t, j) => {
+        const on = i === j;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        panels[j].hidden = !on;
+      });
+      if (focus) {
+        tabs[i].focus();
+        tabs[i].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
+    };
+
+    select(0);
+    g.setAttribute('data-ready', '');
+
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(i));
+      t.addEventListener('keydown', (e) => {
+        const n = tabs.length;
+        const map: Record<string, number> = {
+          ArrowRight: (i + 1) % n,
+          ArrowLeft: (i - 1 + n) % n,
+          Home: 0,
+          End: n - 1,
+        };
+        if (e.key in map) {
+          e.preventDefault();
+          select(map[e.key], true);
+        }
+      });
+    });
+  });
+</script>

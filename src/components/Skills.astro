@@ -1,0 +1,263 @@
+---
+import SectionHeader from './SectionHeader.astro';
+import { skillGroups } from '../data/site';
+
+/* Bento layout: column span (of 12) per group on desktop. */
+const spans: Record<string, number> = {
+  languages: 5,
+  data: 7,
+  ml: 6,
+  ai: 6,
+  databases: 4,
+  tools: 8,
+};
+
+const defaultHint = 'Select a highlighted skill to see where it’s used.';
+---
+
+<section class="section skills" id="skills" aria-labelledby="skills-title">
+  <div class="container">
+    <div class="skills__top">
+      <SectionHeader
+        id="skills"
+        title="Tools I build with."
+        intro="Grouped by what they’re for. No self-rated bars — highlighted skills link to the projects where I’ve actually used them."
+      />
+      <p class="skills__legend mono" data-reveal style="--d:2">
+        <span class="skills__legend-dot" aria-hidden="true"></span>
+        Used in a project
+      </p>
+    </div>
+
+    <ul class="skills__grid" role="list" data-skills-grid>
+      {
+        skillGroups.map((g, i) => (
+          <li
+            class="skill-card"
+            style={`--span:${spans[g.id] ?? 6}; --d:${i % 3}`}
+            data-reveal
+            data-skill-card
+            data-spotlight
+          >
+            <div class="skill-card__head">
+              <span class="skill-card__num mono">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="skill-card__title">{g.title}</h3>
+            </div>
+            <p class="skill-card__blurb">{g.blurb}</p>
+
+            <ul class="chips" role="list">
+              {g.skills.map((s) =>
+                s.usedIn?.length ? (
+                  <li>
+                    <button
+                      type="button"
+                      class="chip chip--used"
+                      data-used-in={s.usedIn.join(', ')}
+                      aria-describedby={`hint-${g.id}`}
+                    >
+                      <span class="chip__dot" aria-hidden="true" />
+                      {s.name}
+                    </button>
+                  </li>
+                ) : (
+                  <li>
+                    <span class="chip">{s.name}</span>
+                  </li>
+                ),
+              )}
+            </ul>
+
+            {g.skills.some((s) => s.usedIn?.length) && (
+              <p class="skill-card__hint mono" id={`hint-${g.id}`} aria-live="polite" data-hint data-default={defaultHint}>
+                {defaultHint}
+              </p>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .skills__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px 40px;
+  }
+  .skills__legend {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  .skills__legend-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--lime);
+    box-shadow: 0 0 8px var(--lime-glow);
+  }
+
+  .skills__grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 16px;
+    margin: 56px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* ---------- Card ---------- */
+  .skill-card {
+    grid-column: span var(--span);
+    display: flex;
+    flex-direction: column;
+    padding: 28px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-raised);
+    overflow: hidden;
+    transition: border-color 0.3s var(--ease-out);
+  }
+  .skill-card:hover {
+    border-color: var(--line-strong);
+  }
+
+  .skill-card__head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+  .skill-card__num {
+    font-size: 0.75rem;
+    color: var(--lime);
+  }
+  .skill-card__title {
+    font-size: 1.35rem;
+    letter-spacing: -0.02em;
+  }
+  .skill-card__blurb {
+    margin-top: 8px;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+  }
+
+  /* ---------- Chips ---------- */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 22px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 34px;
+    padding: 0 13px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.02);
+    color: var(--text-muted);
+    font: 500 0.875rem/1 var(--font-body);
+  }
+  .chip--used {
+    border-color: var(--line-strong);
+    color: var(--text);
+    cursor: pointer;
+    transition:
+      border-color 0.2s,
+      background-color 0.2s,
+      color 0.2s;
+  }
+  .chip--used:hover,
+  .chip--used[aria-pressed='true'] {
+    border-color: rgb(195 245 60 / 0.55);
+    background: var(--lime-soft);
+  }
+  .chip__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--lime);
+  }
+
+  .skill-card__hint {
+    margin-top: auto;
+    padding-top: 22px;
+    font-size: 0.72rem;
+    line-height: 1.5;
+    color: var(--text-faint);
+    min-height: calc(1.5em * 2 + 22px);
+  }
+  .skill-card__hint[data-active] {
+    color: var(--text-muted);
+  }
+  .skill-card__hint strong {
+    color: var(--lime);
+    font-weight: 500;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1024px) {
+    .skill-card {
+      grid-column: span 6;
+    }
+  }
+  @media (max-width: 640px) {
+    .skills__grid {
+      grid-template-columns: 1fr;
+    }
+    .skill-card {
+      grid-column: auto;
+      padding: 22px;
+    }
+  }
+</style>
+
+<script>
+  const grid = document.querySelector<HTMLElement>('[data-skills-grid]');
+
+  if (grid) {
+    const show = (chip: HTMLElement) => {
+      const card = chip.closest('[data-skill-card]');
+      const hint = card?.querySelector<HTMLElement>('[data-hint]');
+      if (!card || !hint) return;
+      card.querySelectorAll('.chip--used').forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+      hint.setAttribute('data-active', '');
+      hint.textContent = '';
+      const label = document.createElement('strong');
+      label.textContent = chip.textContent?.trim() ?? '';
+      hint.append(label, ` → ${chip.dataset.usedIn}`);
+    };
+
+    const reset = (card: Element) => {
+      const hint = card.querySelector<HTMLElement>('[data-hint]');
+      if (!hint) return;
+      card.querySelectorAll('.chip--used').forEach((c) => c.setAttribute('aria-pressed', 'false'));
+      hint.removeAttribute('data-active');
+      hint.textContent = hint.dataset.default ?? '';
+    };
+
+    grid.querySelectorAll<HTMLElement>('.chip--used').forEach((chip) => {
+      chip.setAttribute('aria-pressed', 'false');
+      chip.addEventListener('click', () => show(chip));
+      chip.addEventListener('focus', () => show(chip));
+      chip.addEventListener('pointerenter', (e) => {
+        if (e.pointerType === 'mouse') show(chip);
+      });
+    });
+
+    grid.querySelectorAll('[data-skill-card]').forEach((card) => {
+      card.addEventListener('pointerleave', (e) => {
+        if ((e as PointerEvent).pointerType === 'mouse') reset(card);
+      });
+    });
+  }
+</script>

@@ -1,0 +1,306 @@
+---
+import SectionHeader from './SectionHeader.astro';
+import Icon from './Icon.astro';
+import { site, contact } from '../data/site';
+
+const subject = encodeURIComponent('Opportunity for Ali Affan');
+const links = [
+  site.links.github && { label: 'GitHub', handle: site.links.github.replace('https://', ''), href: site.links.github, icon: 'github' as const },
+  site.links.linkedin && { label: 'LinkedIn', handle: site.links.linkedin.replace('https://www.', ''), href: site.links.linkedin, icon: 'linkedin' as const },
+].filter(Boolean) as { label: string; handle: string; href: string; icon: 'github' | 'linkedin' }[];
+---
+
+<section class="section contact" id="contact" aria-labelledby="contact-title">
+  <div class="contact__glow" aria-hidden="true"></div>
+  <div class="container contact__grid">
+    <div class="contact__copy">
+      <SectionHeader id="contact" title={contact.heading} />
+      <p class="contact__msg" data-reveal style="--d:1">{contact.message}</p>
+      {
+        site.availability && (
+          <p class="contact__status mono" data-reveal style="--d:2">
+            <span class="contact__dot" aria-hidden="true" />
+            {site.availability}
+          </p>
+        )
+      }
+    </div>
+
+    <div class="contact__panel" data-reveal style="--d:1">
+      {
+        site.email && (
+          <div class="mail" data-spotlight>
+            <p class="mail__label mono">Email</p>
+            <a class="mail__addr" href={`mailto:${site.email}?subject=${subject}`}>
+              {site.email}
+            </a>
+            <div class="mail__actions">
+              <a class="btn btn--primary" href={`mailto:${site.email}?subject=${subject}`}>
+                <Icon name="mail" />
+                Write an email
+              </a>
+              <button class="btn" type="button" data-copy={site.email}>
+                <span data-copy-label>Copy address</span>
+              </button>
+            </div>
+            <p class="mail__status mono" role="status" aria-live="polite" data-copy-status></p>
+          </div>
+        )
+      }
+
+      <ul class="links" role="list">
+        {
+          links.map((l) => (
+            <li>
+              <a class="link-row" href={l.href} target="_blank" rel="noopener noreferrer">
+                <span class="link-row__icon">
+                  <Icon name={l.icon} />
+                </span>
+                <span class="link-row__text">
+                  <span class="link-row__label">{l.label}</span>
+                  <span class="link-row__handle mono">{l.handle}</span>
+                </span>
+                <span class="link-row__arrow">
+                  <Icon name="arrow-up-right" />
+                </span>
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+            </li>
+          ))
+        }
+        {
+          site.resumeUrl && (
+            <li>
+              <a class="link-row" href={site.resumeUrl} download>
+                <span class="link-row__icon">
+                  <Icon name="download" />
+                </span>
+                <span class="link-row__text">
+                  <span class="link-row__label">Résumé</span>
+                  <span class="link-row__handle mono">PDF download</span>
+                </span>
+                <span class="link-row__arrow">
+                  <Icon name="arrow-right" />
+                </span>
+              </a>
+            </li>
+          )
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact {
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .contact__glow {
+    position: absolute;
+    z-index: -1;
+    left: 50%;
+    bottom: -40%;
+    width: min(1100px, 140vw);
+    aspect-ratio: 2 / 1;
+    translate: -50% 0;
+    background: radial-gradient(closest-side, var(--lime-glow), rgb(195 245 60 / 0.04) 55%, transparent);
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
+  .contact__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: clamp(40px, 6vw, 88px);
+    align-items: end;
+  }
+  .contact__copy :global(.sh__title) {
+    max-width: 14ch;
+    font-size: clamp(2.4rem, 5.6vw, 4.2rem);
+  }
+  .contact__msg {
+    margin-top: 24px;
+    max-width: 52ch;
+    font-size: 1.08rem;
+    color: var(--text-muted);
+  }
+  .contact__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 28px;
+    font-size: 0.8rem;
+    color: var(--text);
+  }
+  .contact__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--lime);
+    box-shadow: 0 0 12px var(--lime);
+  }
+
+  /* ---------- Email card ---------- */
+  .mail {
+    padding: 28px;
+    border: 1px solid rgb(195 245 60 / 0.3);
+    border-radius: calc(var(--radius) + 4px);
+    background: linear-gradient(140deg, rgb(195 245 60 / 0.07), transparent 50%), var(--bg-raised);
+    overflow: hidden;
+  }
+  .mail__label {
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .mail__addr {
+    display: inline-block;
+    margin-top: 10px;
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 2.6vw, 1.9rem);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    overflow-wrap: anywhere;
+    background: linear-gradient(var(--lime), var(--lime)) 0 100% / 0 1px no-repeat;
+    transition: background-size 0.4s var(--ease-out);
+  }
+  .mail__addr:hover {
+    background-size: 100% 1px;
+  }
+  .mail__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+  .mail__status {
+    min-height: 1.4em;
+    margin-top: 10px;
+    font-size: 0.75rem;
+    color: var(--lime);
+  }
+
+  /* ---------- Link rows ---------- */
+  .links {
+    margin: 12px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 8px;
+  }
+  .link-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: rgb(16 18 15 / 0.7);
+    transition:
+      border-color 0.25s var(--ease-out),
+      background-color 0.25s var(--ease-out);
+  }
+  .link-row:hover {
+    border-color: var(--line-strong);
+    background: var(--surface);
+  }
+  .link-row__icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--surface-2);
+  }
+  .link-row__icon :global(svg) {
+    width: 19px;
+    height: 19px;
+  }
+  .link-row__text {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+  .link-row__label {
+    font-weight: 600;
+  }
+  .link-row__handle {
+    font-size: 0.75rem;
+    color: var(--text-faint);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .link-row__arrow {
+    margin-left: auto;
+    color: var(--text-faint);
+    transition:
+      transform 0.3s var(--ease-out),
+      color 0.2s;
+  }
+  .link-row__arrow :global(svg) {
+    width: 18px;
+    height: 18px;
+  }
+  .link-row:hover .link-row__arrow {
+    color: var(--lime);
+    transform: translate(2px, -2px);
+  }
+
+  @media (max-width: 900px) {
+    .contact__grid {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+  }
+  @media (max-width: 480px) {
+    .mail {
+      padding: 22px;
+    }
+    .mail__actions .btn {
+      flex: 1 1 100%;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) => {
+    const label = btn.querySelector<HTMLElement>('[data-copy-label]');
+    const status = btn.closest('.mail')?.querySelector<HTMLElement>('[data-copy-status]');
+    let timer: number | undefined;
+
+    const fallbackCopy = (text: string) => {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.append(ta);
+      ta.select();
+      const ok = document.execCommand('copy');
+      ta.remove();
+      return ok;
+    };
+
+    btn.addEventListener('click', async () => {
+      const text = btn.dataset.copy ?? '';
+      let ok = false;
+      try {
+        await navigator.clipboard.writeText(text);
+        ok = true;
+      } catch {
+        ok = fallbackCopy(text);
+      }
+      if (label) label.textContent = ok ? 'Copied ✓' : 'Copy address';
+      if (status) status.textContent = ok ? 'Email address copied to clipboard.' : `Couldn’t copy. The address is ${text}`;
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        if (label) label.textContent = 'Copy address';
+        if (status) status.textContent = '';
+      }, 2500);
+    });
+  });
+</script>

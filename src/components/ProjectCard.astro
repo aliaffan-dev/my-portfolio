@@ -1,0 +1,161 @@
+---
+import Icon from './Icon.astro';
+import type { ProjectCard } from '../data/site';
+
+interface Props {
+  project: ProjectCard;
+  index: number;
+}
+
+const { project: p, index } = Astro.props;
+---
+
+<article class="pc" data-spotlight data-reveal style={`--d:${index % 3}`}>
+  <p class="pc__num mono" aria-hidden="true">{String(index + 1).padStart(2, '0')}</p>
+  <h4 class="pc__title">{p.name}</h4>
+  <p class="pc__text">{p.text}</p>
+
+  {
+    p.metrics && p.metrics.length > 0 && (
+      <div class="pc__metrics">
+        <dl class="pc__metric-row">
+          {p.metrics.map((m) => (
+            <div class="pc__metric">
+              <dt class="mono">{m.label}</dt>
+              <dd>{m.value}</dd>
+            </div>
+          ))}
+        </dl>
+        {p.metricsNote && <p class="pc__metric-note">{p.metricsNote}</p>}
+      </div>
+    )
+  }
+
+  <ul class="tag-list pc__stack" role="list" aria-label="Technologies">
+    {p.stack.map((t) => <li class="tag">{t}</li>)}
+  </ul>
+
+  <div class="pc__links">
+    {
+      p.demo && (
+        <a href={p.demo} target="_blank" rel="noopener noreferrer" class="pc__link">
+          Live demo <Icon name="arrow-up-right" />
+          <span class="sr-only">{` for ${p.name} (opens in new tab)`}</span>
+        </a>
+      )
+    }
+    {
+      p.repo ? (
+        <a href={p.repo} target="_blank" rel="noopener noreferrer" class="pc__link">
+          <Icon name="github" /> Code
+          <span class="sr-only">{` for ${p.name} on GitHub (opens in new tab)`}</span>
+        </a>
+      ) : (
+        <span class="pc__nolink mono">Code not published</span>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .pc {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 26px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-raised);
+    overflow: hidden;
+    transition: border-color 0.3s var(--ease-out);
+  }
+  .pc:hover {
+    border-color: var(--line-strong);
+  }
+  .pc__num {
+    font-size: 0.72rem;
+    color: var(--lime);
+  }
+  .pc__title {
+    margin-top: 12px;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+  .pc__text {
+    margin-top: 10px;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+  }
+  .pc__stack {
+    margin-top: 18px;
+  }
+
+  .pc__metrics {
+    margin-top: 18px;
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+  }
+  .pc__metric-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin: 0;
+  }
+  .pc__metric dt {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .pc__metric dd {
+    margin: 4px 0 0;
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--lime);
+  }
+  .pc__metric-note {
+    margin-top: 10px;
+    font-size: 0.72rem;
+    line-height: 1.45;
+    color: var(--text-faint);
+  }
+  .pc__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin-top: auto;
+    padding-top: 22px;
+  }
+  .pc__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 32px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    transition: color 0.2s;
+  }
+  .pc__link :global(svg) {
+    width: 17px;
+    height: 17px;
+  }
+  .pc__link:hover {
+    color: var(--lime);
+  }
+  .pc__nolink {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    font-size: 0.72rem;
+    color: var(--text-faint);
+  }
+</style>

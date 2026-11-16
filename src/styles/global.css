@@ -1,0 +1,357 @@
+/* ==========================================================================
+   Design tokens
+   ========================================================================== */
+:root {
+  color-scheme: dark;
+
+  /* Surfaces — charcoal with a faint green undertone so the lime feels native */
+  --bg: #0a0b09;
+  --bg-raised: #10120f;
+  --surface: #141712;
+  --surface-2: #1a1e17;
+  --line: rgb(232 240 220 / 0.08);
+  --line-strong: rgb(232 240 220 / 0.16);
+
+  /* Text */
+  --text: #e8ece1;
+  --text-muted: #9ba293;
+  --text-faint: #7d8476;
+
+  /* Accent */
+  --lime: #c3f53c;
+  --lime-soft: rgb(195 245 60 / 0.14);
+  --lime-glow: rgb(195 245 60 / 0.22);
+  --on-lime: #0a0b09;
+
+  /* Syntax colours for the notebook cell */
+  --syn-key: #c3f53c;
+  --syn-str: #e6d9a8;
+  --syn-punc: #6f7768;
+  --syn-fn: #9fd8ff;
+
+  /* Type */
+  --font-display: 'Bricolage Grotesque', ui-sans-serif, sans-serif;
+  --font-body: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+
+  /* Layout */
+  --container: 1180px;
+  --gutter: clamp(16px, 4vw, 40px);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --nav-h: 68px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-h) + 16px);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* Film grain — very subtle, adds depth to flat dark areas */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+::selection {
+  background: var(--lime);
+  color: var(--on-lime);
+}
+
+:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ==========================================================================
+   Utilities
+   ========================================================================== */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 200;
+  padding: 10px 16px;
+  background: var(--lime);
+  color: var(--on-lime);
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  transform: translateY(-160%);
+  transition: transform 0.2s var(--ease-out);
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* Small uppercase label used above headings */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+.btn {
+  --btn-bg: transparent;
+  --btn-fg: var(--text);
+  --btn-border: var(--line-strong);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 0 20px;
+  border: 1px solid var(--btn-border);
+  border-radius: 999px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font: 600 0.95rem/1 var(--font-body);
+  cursor: pointer;
+  transition:
+    background-color 0.25s var(--ease-out),
+    border-color 0.25s var(--ease-out),
+    color 0.25s var(--ease-out),
+    box-shadow 0.25s var(--ease-out),
+    transform 0.25s var(--ease-out);
+}
+.btn svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+.btn:hover {
+  --btn-border: var(--text-muted);
+  background: rgb(255 255 255 / 0.04);
+}
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn--primary {
+  --btn-bg: var(--lime);
+  --btn-fg: var(--on-lime);
+  --btn-border: var(--lime);
+}
+.btn--primary:hover {
+  background: var(--lime);
+  --btn-border: var(--lime);
+  box-shadow:
+    0 0 0 4px var(--lime-soft),
+    0 8px 30px -6px var(--lime-glow);
+}
+
+.btn--sm {
+  min-height: 38px;
+  padding: 0 16px;
+  font-size: 0.875rem;
+}
+
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  color: var(--text-muted);
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+}
+.icon-btn svg {
+  width: 19px;
+  height: 19px;
+}
+.icon-btn:hover {
+  color: var(--text);
+  background: rgb(255 255 255 / 0.06);
+}
+
+/* ==========================================================================
+   Sections
+   ========================================================================== */
+.section {
+  position: relative;
+  padding-block: clamp(88px, 12vw, 148px);
+}
+.section + .section {
+  border-top: 1px solid var(--line);
+}
+
+/* Scroll reveal — only hides content when JS is running (html.js),
+   so the page is fully readable without JavaScript. */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.8s var(--ease-out) calc(var(--d, 0) * 70ms),
+    transform 0.8s var(--ease-out) calc(var(--d, 0) * 70ms),
+    border-color 0.3s var(--ease-out);
+}
+.js [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ==========================================================================
+   Spotlight — cursor-following glow on cards ([data-spotlight]).
+   Position is set by the script in BaseLayout.
+   ========================================================================== */
+[data-spotlight] {
+  --mx: 50%;
+  --my: 0%;
+  position: relative;
+  isolation: isolate;
+}
+[data-spotlight]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(420px circle at var(--mx) var(--my), rgb(195 245 60 / 0.07), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.35s var(--ease-out);
+  pointer-events: none;
+}
+[data-spotlight]:hover::before {
+  opacity: 1;
+}
+
+/* Generic tag chip (non-interactive) */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.02);
+  color: var(--text-muted);
+  font: 500 0.8rem/1 var(--font-mono);
+}
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ==========================================================================
+   Load-in animation (staggered via --d)
+   ========================================================================== */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: reveal 0.9s var(--ease-out) forwards;
+  animation-delay: calc(var(--d, 0) * 90ms + 80ms);
+}
+
+@keyframes reveal {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
